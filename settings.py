@@ -1,4 +1,9 @@
 # Django settings for smsRelay project.
+import sys, os
+
+filedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(filedir))
+sys.path.append(os.path.join(filedir, 'router'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,10 +16,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'try2',
-        'USER': 'postgres',
-        'HOST':'localhost',                     # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'mifos',
+        'USER': 'root',
+        'HOST':'localhost',
+        'PASSWORD':'mosespass',
+                            # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -107,18 +114,20 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'rapidsms',
     'relay',
     'django_extensions',
-    #'django.contrib.auth',
-    #'django.contrib.contenttypes',
-    #'django.contrib.sessions',
-    #'django.contrib.sites',
-    #'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    'rapidsms_httprouter',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -143,3 +152,13 @@ LOGGING = {
         },
     }
 }
+
+
+SMS_APPS  = [
+"relay",
+        ]
+
+from localsettings import *
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
