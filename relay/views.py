@@ -12,6 +12,7 @@ from django.test.client import Client
 import urllib,urllib2
 import requests
 import json
+import datetime
 
 
 def submissions(request):
@@ -43,9 +44,10 @@ def approve(request,payment_pk):
 
     payment.approved=True
     post_url=settings.BASE_URL+"api/v1/clients/%d/transactions?tenantIdentifier=default&command=repayment"%payment.client.id
-    url="https://localhost:8443/mifosng-provider/api/v1/clients/1/?tenantIdentifier=default"
+    url="https://151.236.219.158:8443/mifosng-provider/api/v1/clients/1/?tenantIdentifier=default"
     headers={"Content-type": "application/json"}
-    post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "14 May 2012","transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
+    now=datetime.datetime.now()
+    post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %m %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
     r=s.get(url, headers={'x-test2': 'true'},verify=False)
     return HttpResponse(r.content)
 
@@ -53,7 +55,7 @@ def approve(request,payment_pk):
 def proxy(request):
     import simplejson
     from requests.auth import HTTPBasicAuth
-    base_url="https://localhost:8443/mifosng-provider/api/v1"
+    base_url="https://151.236.219.158:8443/mifosng-provider/api/v1"
     parts=request.path.rsplit("/proxy")[1]
     args="?tenantIdentifier=default&"+request.META['QUERY_STRING']
     headers=request.META
