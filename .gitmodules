@@ -1,3 +1,6 @@
 [submodule "router"]
 	path = router
 	url = git@github.com:sparkplug/rapidsms-httprouter.git
+[submodule "rapidsms"]
+	path = rapidsms
+	url = git@github.com:unicefuganda/rapidsms.git

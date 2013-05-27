@@ -4,6 +4,7 @@ import sys, os
 filedir = os.path.dirname(__file__)
 sys.path.append(os.path.join(filedir))
 sys.path.append(os.path.join(filedir, 'router'))
+sys.path.append(os.path.join(filedir, 'rapidsms', 'lib'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -17,7 +18,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'mifos',
+        'NAME': 'mifostenant-default',
         'USER': 'root',
         'HOST':'localhost',
         'PASSWORD':'mosespass',
@@ -105,6 +106,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.RemoteUserBackend',
+    )
+
 ROOT_URLCONF = 'smsRelay.urls'
 
 TEMPLATE_DIRS = (
@@ -115,9 +120,10 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'rapidsms',
-    'relay',
     'django_extensions',
     'rapidsms_httprouter',
+    "rapidsms.contrib.default",
+    'relay',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -125,10 +131,16 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
+   # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+   # 'django.contrib.admindocs',
 )
+
+SMS_APPS  = [
+    "relay",
+    ]
+
+ROUTER_URL = "http://backend.server.com/send?backend=%(backend)s&recipient=%(recipient)s&text=%(text)s"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -153,10 +165,23 @@ LOGGING = {
     }
 }
 
+ROOT_PATH=os.path.dirname(os.path.realpath(__file__))
+STATIC_PATH=os.path.join(os.path.join(ROOT_PATH,'static'))
+TEMPLATE_DIRS = (
+    os.path.join(ROOT_PATH, 'templates')
+    )
 
-SMS_APPS  = [
-"relay",
-        ]
+STATICFILES_DIRS = (
+    (os.path.join(os.path.join(ROOT_PATH,'static')),)
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    )
+
+
+
+
+
 
 from localsettings import *
 

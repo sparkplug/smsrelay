@@ -1,0 +1,78 @@
+{% extends  "relay/base.html" %}
+
+{% block content %}
+<div class="container span-12">
+    <h3>Payements Listing</h3>
+    <table class="table table-bordered table-striped" width="100%">
+        <thead>
+        <tr>
+            <td>
+                Mobile
+            </td>
+
+            <td>
+                Amount
+            </td>
+
+
+            <td>
+                Name
+            </td>
+            <td>
+                Approve
+            </td>
+        </tr>
+        </thead>
+    <tbody>
+
+{%  for payment in payments %}
+
+    <tr>
+    <td>
+        {{ payment.sender }}
+    </td>
+        <td>
+            {{ payment.amount }} UGX
+        </td>
+        <td>
+            {% if payment.client %}
+            {{ payment.client.fullname }} UGX
+                {% else %}
+            Not In the system yet
+            {% endif %}
+        </td>
+        <td>
+            {% if payment.approved %}
+            Approved
+
+            {% else %}
+            <a href="/submissions/{{payment.id }}/approve/"> Approve </a>
+            {% endif %}
+
+        </td>
+    </tr>
+
+
+    {% endfor %}
+    </tbody>
+    </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if payments.has_previous %}
+            <a href="?page={{ payments.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ payments.number }} of {{ payments.paginator.num_pages }}.
+        </span>
+
+        {% if payments.has_next %}
+            <a href="?page={{ contacts.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+    </div>
+
+</div>
+
+
+{% endblock %}
