@@ -19,9 +19,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'mifostenant-default',
-        'USER': 'root',
+        'USER': 'mifos',
         'HOST':'localhost',
-        'PASSWORD':'mosespass',
+        'PASSWORD':'mifos',
                             # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -110,7 +110,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.RemoteUserBackend',
     )
 
-ROOT_URLCONF = 'smsRelay.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

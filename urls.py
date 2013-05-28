@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 from rapidsms_httprouter.urls import urlpatterns as router_urls
-from .relay.views import submissions,approve,proxy
+from relay.views import submissions,approve,proxy
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
