@@ -36,7 +36,7 @@
         </td>
         <td>
             {% if payment.client %}
-            {{ payment.client.fullname }} UGX
+            {{ payment.client.display_name}} UGX
                 {% else %}
             Not In the system yet
             {% endif %}
