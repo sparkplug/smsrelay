@@ -44,11 +44,10 @@ def approve(request,payment_pk):
 
     payment.approved=True
     post_url=settings.BASE_URL+"api/v1/clients/%d/transactions?tenantIdentifier=default&command=repayment"%payment.client.id
-    url="https://151.236.219.158:8443/mifosng-provider/api/v1/clients/1/?tenantIdentifier=default"
     headers={"Content-type": "application/json"}
     now=datetime.datetime.now()
     post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %m %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
-    r=s.get(url, headers={'x-test2': 'true'},verify=False)
+    r=s.get(post_url, headers={'x-test2': 'true'},verify=False)
     return HttpResponse(r.content)
 
 @csrf_exempt
@@ -86,6 +85,8 @@ def proxy(request):
         r=requests.get(url,verify=False)
         print r.content
         return HttpResponse(r.content)
+def contacts(request):
+    return render_to_response("relay/contacts.html",{'contacts':contacts})
 
 
 
