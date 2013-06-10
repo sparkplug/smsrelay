@@ -278,7 +278,7 @@ class MClient(models.Model):
     display_name = models.CharField(max_length=300)
     image_key = models.CharField(max_length=1500, blank=True)
     #joined_date = models.DateField(null=True, blank=True)
-    is_deleted = models.IntegerField()
+    #is_deleted = models.IntegerField()
     class Meta:
         db_table = u'm_client'
 
