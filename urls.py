@@ -5,7 +5,7 @@ from django.contrib import admin
 from rapidsms_httprouter.urls import urlpatterns as router_urls
 from relay.views import submissions,approve,proxy,send_messages
 from rapidsms_httprouter.views import  console
-from rapidsms.lib.urls.login_logout import urlpatterns as wtf
+from rapidsms.urls.login_logout import urlpatterns as wtf
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
