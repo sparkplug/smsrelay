@@ -622,7 +622,7 @@ class MNote(models.Model):
     group = models.ForeignKey(MGroup, null=True, blank=True)
     loan = models.ForeignKey(MLoan, null=True, blank=True)
     loan_transaction = models.ForeignKey(MLoanTransaction, null=True, blank=True)
-    deposit_account = models.ForeignKey(MDepositAccount, null=True, blank=True)
+    #deposit_account = models.ForeignKey(MDepositAccount, null=True, blank=True)
     saving_account = models.ForeignKey('MSavingAccount', null=True, blank=True)
     note_type_enum = models.IntegerField()
     note = models.CharField(max_length=3000, blank=True)

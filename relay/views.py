@@ -5,14 +5,15 @@ from rapidsms_httprouter.models import Message
 from rapidsms.models import Contact, Connection
 from django.shortcuts import render_to_response,HttpResponse
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
-from .models import MobilePayment,MLoan
+from .models import MobilePayment,MLoan,MNote,MLoanRepaymentSchedule
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.test.client import Client
-import urllib,urllib2
 import requests
 import json
 import datetime
+from rapidsms_httprouter.router import get_router
+from rapidsms.models import Contact, Connection, Backend
 
 
 def submissions(request):
@@ -39,18 +40,28 @@ def approve(request,payment_pk):
     payment=MobilePayment.objects.get(pk=payment_pk)
     s = requests.Session()
     s.auth = (settings.USERNAME, settings.PASSWORD)
-
     s.headers.update({'x-test': 'true'})
-
     payment.approved=True
+    payment.save()
     client=payment.client
-    loan_id=MLoan.objects.get(client=client).id
-    post_url=settings.BASE_URL+"loans/%d/transactions?tenantIdentifier=default&command=repayment"%loan_id
+    loan=MLoan.objects.get(client=client)
+    no_ofpayements=loan.term_frequency
+    principal=int(loan.principal_amount)
+    loan_officer=loan.loan_officer_id
+    payements_count=MNote.objects.filter(loan_id=loan.d,client_id=client.id).count()
+    next_payement=MLoanRepaymentSchedule.objects.filter(installment=payements_count+1)
+    pm=int(MLoanRepaymentSchedule.objects.filter(loan_id=loan.id)[0].principal_amount)
+    balance=(no_ofpayements-(payements_count+1))*pm
+    message="Thanks %s for your payment of %d on %s. Your remaining balance is %d and your next payment is due %s"%(client.firstname,payment.amount,payment.created.strftime("%d %b %Y"),balance,next_payement.duedate.strftime("%d %b"))
+    post_url=settings.BASE_URL+"loans/%d/transactions?tenantIdentifier=default&command=repayment"%loan.id
     headers={"Content-type": "application/json"}
     now=datetime.datetime.now()
-
     post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %b %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
     r=requests.post(post_url,json.dumps(dict(post_dict)),verify=False,headers=headers,auth=HTTPBasicAuth(settings.USERNAME, settings.PASSWORD),)
+    router = get_router()
+    backend, created = Backend.objects.get_or_create(name="mifos")
+    connection, created = Connection.objects.get_or_create(backend=backend, identity=payment.sender)
+    msg1 = router.add_outgoing(connection, message)
     return HttpResponse(r.text)
 
 @csrf_exempt
