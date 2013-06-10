@@ -43,7 +43,7 @@ def approve(request,payment_pk):
     s.headers.update({'x-test': 'true'})
 
     payment.approved=True
-    post_url=settings.BASE_URL+"api/v1/clients/%d/transactions?tenantIdentifier=default&command=repayment"%payment.client.id
+    post_url=settings.BASE_URL+"/clients/%d/transactions?tenantIdentifier=default&command=repayment"%payment.client.id
     headers={"Content-type": "application/json"}
     now=datetime.datetime.now()
     post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %m %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
