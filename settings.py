@@ -120,6 +120,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'rapidsms',
+    'djtables',
     'django_extensions',
     'rapidsms_httprouter',
     "rapidsms.contrib.default",
