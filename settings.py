@@ -140,7 +140,6 @@ SMS_APPS  = [
     "relay",
     ]
 
-ROUTER_URL = "http://backend.server.com/send?backend=%(backend)s&recipient=%(recipient)s&text=%(text)s"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
