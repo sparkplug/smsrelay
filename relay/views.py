@@ -51,7 +51,7 @@ def approve(request,payment_pk):
 
     post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %b %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
     r=requests.post(post_url,json.dumps(dict(post_dict)),verify=False,headers=headers,auth=HTTPBasicAuth(settings.USERNAME, settings.PASSWORD),)
-    return HttpResponse(r.content)
+    return HttpResponse(r.text)
 
 @csrf_exempt
 def proxy(request):
