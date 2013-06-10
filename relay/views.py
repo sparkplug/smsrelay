@@ -48,7 +48,7 @@ def approve(request,payment_pk):
     no_ofpayements=loan.term_frequency
     principal=int(loan.principal_amount)
     loan_officer=loan.loan_officer_id
-    payements_count=MNote.objects.filter(loan_id=loan.d,client_id=client.id).count()
+    payements_count=MNote.objects.filter(loan_id=loan.id,client_id=client.id).count()
     next_payement=MLoanRepaymentSchedule.objects.filter(installment=payements_count+1)
     pm=int(MLoanRepaymentSchedule.objects.filter(loan_id=loan.id)[0].principal_amount)
     balance=(no_ofpayements-(payements_count+1))*pm
