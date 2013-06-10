@@ -5,7 +5,7 @@ from rapidsms_httprouter.models import Message
 from rapidsms.models import Contact, Connection
 from django.shortcuts import render_to_response,HttpResponse
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
-from .models import MobilePayment
+from .models import MobilePayment,MLoan
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.test.client import Client
@@ -35,7 +35,7 @@ def submissions(request):
 
 @csrf_exempt
 def approve(request,payment_pk):
-
+    from requests.auth import HTTPBasicAuth
     payment=MobilePayment.objects.get(pk=payment_pk)
     s = requests.Session()
     s.auth = (settings.USERNAME, settings.PASSWORD)
@@ -43,11 +43,14 @@ def approve(request,payment_pk):
     s.headers.update({'x-test': 'true'})
 
     payment.approved=True
-    post_url=settings.BASE_URL+"clients/%d/transactions?tenantIdentifier=default&command=repayment"%payment.client.id
+    client=payment.client
+    loan_id=MLoan.objects.get(client=client).id
+    post_url=settings.BASE_URL+"loans/%d/transactions?tenantIdentifier=default&command=repayment"%loan_id
     headers={"Content-type": "application/json"}
     now=datetime.datetime.now()
-    post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %m %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
-    r=s.get(post_url, headers={'x-test2': 'true'},verify=False)
+
+    post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %b %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
+    r=requests.post(post_url,json.dumps(dict(post_dict)),verify=False,headers=headers,auth=HTTPBasicAuth(settings.USERNAME, settings.PASSWORD),)
     return HttpResponse(r.content)
 
 @csrf_exempt
@@ -86,7 +89,7 @@ def proxy(request):
         print r.content
         return HttpResponse(r.content)
 def contacts(request):
-    return render_to_response("relay/contacts.html",{'contacts':contacts})
+    return render_to_response("relay/contacts.html",{'contacts':None})
 
 
 
