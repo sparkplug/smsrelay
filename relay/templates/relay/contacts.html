@@ -1,0 +1,22 @@
+{% extends  "relay/base.html" %}
+
+{% block content %}
+    <div class="container span-12">
+        <h3>Send Messages</h3>
+        <form method="post">
+            {% csrf_token %}
+            <table class="table table-bordered " width="100%">
+
+
+    {{ mform.as_table }}
+
+
+
+    <tr><td>  <input type="submit" value="send"></td></tr>
+
+        </table>
+        </form>
+    </div>
+
+
+{% endblock %}

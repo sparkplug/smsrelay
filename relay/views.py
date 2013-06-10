@@ -5,7 +5,7 @@ from rapidsms_httprouter.models import Message
 from rapidsms.models import Contact, Connection
 from django.shortcuts import render_to_response,HttpResponse
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
-from .models import MobilePayment,MLoan,MNote,MLoanRepaymentSchedule
+from .models import MobilePayment,MLoan,MNote,MLoanRepaymentSchedule,MClient
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.test.client import Client
@@ -14,7 +14,16 @@ import json
 import datetime
 from rapidsms_httprouter.router import get_router
 from rapidsms.models import Contact, Connection, Backend
+from django import forms
+from django.template import RequestContext
 
+
+
+def clean_number(number):
+    if number.startswith('0'):
+        return '%s%s' % (256, number[1:])
+    elif number.startswith('+'):
+        return '%s' % number[1:]
 
 def submissions(request):
     payment_list=MobilePayment.objects.order_by('-created')
@@ -32,7 +41,7 @@ def submissions(request):
 
 
 
-    return render_to_response("relay/submissions.html",{'payments':payments})
+    return render_to_response("relay/submissions.html",{'payments':payments},context_instance=RequestContext(request))
 
 @csrf_exempt
 def approve(request,payment_pk):
@@ -99,8 +108,30 @@ def proxy(request):
         r=requests.get(url,verify=False)
         print r.content
         return HttpResponse(r.content)
-def contacts(request):
-    return render_to_response("relay/contacts.html",{'contacts':None})
+
+
+class MessageForm(forms.Form): # pragma: no cover
+    text = forms.CharField(max_length=160, label="Message", widget=forms.TextInput(attrs={'size': '60'}))
+    contacts = forms.ModelMultipleChoiceField(queryset=MClient.objects.all())
+
+def send_messages(request):
+    mform=MessageForm()
+    if request.method == 'POST':
+        mform = MessageForm(request.POST)
+        if mform.is_valid():
+            contacts=mform.cleaned_data['contacts']
+            message=mform.cleaned_data['text']
+            router = get_router()
+            backend, created = Backend.objects.get_or_create(name="mifos")
+            for m in contacts:
+                try:
+                    connection, created = Connection.objects.get_or_create(backend=backend, identity=clean_number(m.external_id))
+                    router.add_outgoing(connection, message)
+                except AttributeError:
+                    pass
+            return render_to_response("relay/contacts.html",{'mform':mform,'status':'Messages Sent'})
+
+    return render_to_response("relay/contacts.html",{'mform':mform},context_instance=RequestContext(request))
 
 
 

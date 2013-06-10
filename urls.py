@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 from rapidsms_httprouter.urls import urlpatterns as router_urls
-from relay.views import submissions,approve,proxy,contacts
+from relay.views import submissions,approve,proxy,send_messages
+from rapidsms_httprouter.views import  console
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -12,9 +13,10 @@ from relay.views import submissions,approve,proxy,contacts
 urlpatterns = patterns('',
     # Examples:
      url(r'^submissions/?$', submissions, name='submissions'),
-    url(r'^submissions/?$', contacts, name='contacts'),
+    url(r'^messages/?$', send_messages, name='contacts'),
     url(r'^proxy/.', proxy, name='proxy'),
     url(r"^submissions/(?P<payment_pk>\d+)/approve/$", approve, name="approve"),
+    url("^console", console, {}, 'httprouter-console'),
 
 )+router_urls
 
