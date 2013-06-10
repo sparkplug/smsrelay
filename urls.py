@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^messages/?$', send_messages, name='contacts'),
     url(r'^proxy/.', proxy, name='proxy'),
     url(r"^submissions/(?P<payment_pk>\d+)/approve/$", approve, name="approve"),
-    url("^console", console, {}, 'httprouter-console'),
+    url("^router/console", console, {}, 'httprouter-console'),
 
 )+router_urls
 
