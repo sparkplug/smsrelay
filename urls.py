@@ -12,7 +12,7 @@ from rapidsms_httprouter.views import  console
 
 urlpatterns = patterns('',
     # Examples:
-     url(r'^submissions/?$', submissions, name='submissions'),
+     url(r'^submissions/?$', submissions, name='rapidsms-dashboard'),
     url(r'^messages/?$', send_messages, name='contacts'),
     url(r'^proxy/.', proxy, name='proxy'),
     url(r"^submissions/(?P<payment_pk>\d+)/approve/$", approve, name="approve"),
