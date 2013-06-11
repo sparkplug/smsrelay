@@ -279,8 +279,8 @@ class MClient(models.Model):
     image_key = models.CharField(max_length=1500, blank=True)
     #joined_date = models.DateField(null=True, blank=True)
     #is_deleted = models.IntegerField()
-    def __unicode__(self):
-        return "%s(%S)"(self.display_name,self.external_id)
+    def __str__(self):
+        return "%s(%s)"%(self.display_name,str(self.external_id))
     class Meta:
         db_table = u'm_client'
 
