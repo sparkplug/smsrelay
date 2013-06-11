@@ -65,7 +65,7 @@ def approve(request,payment_pk):
     post_url=settings.BASE_URL+"loans/%d/transactions?tenantIdentifier=default&command=repayment"%loan.id
     headers={"Content-type": "application/json"}
     now=datetime.datetime.now()
-    post_dict={"locale": "en_GB","dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %b %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
+    post_dict={"locale": "en_GB","accountNumber": "%s"%payment.client.account_no,"dateFormat": "dd MMMM yyyy","transactionDate": "%s"%now.strftime("%d %b %Y"),"transactionAmount": "%d"%payment.amount,"note": "Mobile Payment"}
     r=requests.post(post_url,json.dumps(dict(post_dict)),verify=False,headers=headers,auth=HTTPBasicAuth(settings.USERNAME, settings.PASSWORD),)
     router = get_router()
     backend, created = Backend.objects.get_or_create(name="mifos")
