@@ -1171,3 +1171,10 @@ class XRegisteredTable(models.Model):
     class Meta:
         db_table = u'x_registered_table'
 
+class MobilePayment(models.Model):
+    created=models.DateTimeField(auto_now=True)
+    sender=models.CharField(max_length=100)
+    approved=models.BooleanField(default=False)
+    amount=models.IntegerField(max_length=50)
+    client=models.ForeignKey(MClient,related_name="payers",null=True)
+
