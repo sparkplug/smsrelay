@@ -16,6 +16,7 @@ from rapidsms_httprouter.router import get_router
 from rapidsms.models import Contact, Connection, Backend
 from django import forms
 from django.template import RequestContext
+from django.db.models import Q
 
 
 
@@ -27,6 +28,11 @@ def clean_number(number):
 
 def submissions(request):
     payment_list=MobilePayment.objects.order_by('-created')
+    if request.GET.get("search"):
+        search=request.GET.get("search")
+        payment_list=MobilePayment.objects.filter(Q(client__display_name__icontains=search)
+                        | Q(amount__icontains=search)
+                        | Q(sender__icontains=search))
 
     paginator = Paginator(payment_list, 25)
     page = request.GET.get('page',1)
